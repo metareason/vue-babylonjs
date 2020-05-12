@@ -4,7 +4,7 @@
   "files": [
     "*"
   ],
-  "main": "dist/umd.js",
+  "main": "src",
   "module": "dist/esm.js",
   "unpkg": "dist/umd.min.js",
   "jsdelivr": "dist/umd.min.js",
