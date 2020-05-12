@@ -1,3 +1,5 @@
+# Performance-debug fork
+
 # [1.0.0-beta.7](https://github.com/Beg-in/vue-babylonjs/compare/1.0.0-beta.5...1.0.0-beta.7) (2019-06-02)
 
 
