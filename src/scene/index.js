@@ -179,6 +179,7 @@ export default {
     },
 
     setScene() {
+      console.log('dt-debug: This is a message from vue-babylonjs#performance-debug')
       this.engine = new Engine(this.$refs.scene, true);
       this.$emit('engine', this.engine);
       this.scene = new Scene(this.engine);
