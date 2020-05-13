@@ -1,4 +1,5 @@
-import { Vector3, MeshBuilder } from '@babylonjs/core';
+import { Vector3, TransformNode } from '@babylonjs/core';
+// import { Vector3, MeshBuilder } from '@babylonjs/core';
 import AbstractEntity from '../entity/abstract';
 import { vec3, toVec3 } from '../types/vector';
 
@@ -75,10 +76,15 @@ export default {
   /* eslint-disable camelcase */
   _$_onTransform() {
     if (!this.$entity) {
-      // HACK: TransformNode does not implement IPhysicsEnabledObject, so using invisible box instead
-      let box = MeshBuilder.CreateBox(this.name, {}, this.$scene);
-      box.isVisible = false;
-      this.$entity = box;
+      // assuming we don t need that
+      // https://doc.babylonjs.com/how_to/using_the_physics_engine
+      // revert commit
+      // https://github.com/Beg-in/vue-babylonjs/commit/d57997635b99f5eb773c6e71cf9bddff6be551e9
+      this.$entity = new TransformNode(this.name, this.$scene);
+      // // HACK: TransformNode does not implement IPhysicsEnabledObject, so using invisible box instead
+      // let box = MeshBuilder.CreateBox(this.name, {}, this.$scene);
+      // box.isVisible = false;
+      // this.$entity = box;
     }
     this._$_setPosition();
     this._$_setRotation();
