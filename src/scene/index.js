@@ -1,3 +1,4 @@
+import '@babylonjs/inspector';
 import { Engine, Scene, Color3, Vector3 } from '@babylonjs/core';
 import { createBus, defer } from '../util';
 import { vecValidator as validator, toVec3 } from '../types/vector';
@@ -278,43 +279,40 @@ export default {
     this.defaultEnvironment();
   },
 
-  // beforeDestroy() {
-  //   console.log('scene before destroy by vue babylon');
-  //   window.removeEventListener('resize', this.resize);
-  //   this.engine.stopRenderLoop();
-  //   this.observers();
-  //   this.scene.dispose();
-  //   this.vrHelper = null;
-  //   this.scene = null;
-  //   this.engine = null;
-  //   console.log('scene destroyed by vue babylon');
-  // },
-
   beforeDestroy() {
-    // console.log('dt-debug: before destroy');
     window.removeEventListener('resize', this.resize);
-    // console.log('remove window resize ok');
     this.engine.stopRenderLoop();
-    // console.log('dt-debug: engine stop render loop ok');
-    // todo check if this is related to ambient / fog (props have default color 3)
-    // this.engine.clear(this.ambient, false, false);
-    this.engine.clear(Color3.Black(), false, false);
-    // console.log('dt-debug: engine cleanup');
-    // this.engine.dispose(); // crash
-    // console.log('dispose of engine ok');
     this.observers();
-    // console.log('remove scene observers ok', this.scene);
-    // https://forum.babylonjs.com/t/clearing-the-scene-and-engine-is-this-overkill/407/5
-    // From my experience, there was an odd memory leak happening when I was using scene.dispose(),
-    // while engine.dispose() worked well at cleaning everything in memory
-    // this.scene.dispose(); // crash
-    // console.log('dispose of scene ok');
-    // this.vrHelper = null; // https://doc.babylonjs.com/how_to/webvr_helper
-    this.scene = null; // useless
-    this.engine = null; // useless
-    // console.log('dt-debug: before destroy ok');
+    this.scene.dispose();
+    this.vrHelper = null;
+    this.scene = null;
+    this.engine = null;
   },
 
+  // beforeDestroy() {
+  //   // console.log('dt-debug: before destroy');
+  //   window.removeEventListener('resize', this.resize);
+  //   // console.log('remove window resize ok');
+  //   this.engine.stopRenderLoop();
+  //   // console.log('dt-debug: engine stop render loop ok');
+  //   // todo check if this is related to ambient / fog (props have default color 3)
+  //   // this.engine.clear(this.ambient, false, false);
+  //   this.engine.clear(Color3.Black(), false, false);
+  //   // console.log('dt-debug: engine cleanup');
+  //   // this.engine.dispose(); // crash
+  //   // console.log('dispose of engine ok');
+  //   this.observers();
+  //   // console.log('remove scene observers ok', this.scene);
+  //   // https://forum.babylonjs.com/t/clearing-the-scene-and-engine-is-this-overkill/407/5
+  //   // From my experience, there was an odd memory leak happening when I was using scene.dispose(),
+  //   // while engine.dispose() worked well at cleaning everything in memory
+  //   // this.scene.dispose(); // crash
+  //   // console.log('dispose of scene ok');
+  //   // this.vrHelper = null; // https://doc.babylonjs.com/how_to/webvr_helper
+  //   this.scene = null; // useless
+  //   this.engine = null; // useless
+  //   // console.log('dt-debug: before destroy ok');
+  // },
 
   render(createElement) {
     return createElement('canvas', {
