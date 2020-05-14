@@ -159,7 +159,7 @@ export default {
 
     debugLayer() {
       if (this.debug) {
-        this.scene.debugLayer.show();
+        this.scene.debugLayer.show({ overlay: true });
       } else {
         this.scene.debugLayer.hide();
       }
