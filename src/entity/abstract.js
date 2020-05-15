@@ -1,5 +1,5 @@
 import { id, isDisposable, createBus, defer } from '../util';
-import { registerObservers } from '../observable';
+// import { registerObservers } from '../observable';
 
 export default {
   inject: {
@@ -62,7 +62,7 @@ export default {
     },
 
     async _$_init() {
-      this._$_clearObservers = registerObservers.call(this, this.$scene);
+      // this._$_clearObservers = registerObservers.call(this, this.$scene);
       if (this.$options._$_onTransform) { // Private Lifecycle Hook
         await this.$options._$_onTransform.call(this);
       }
@@ -91,9 +91,9 @@ export default {
     },
 
     async $replace(entity) {
-      if (this._$_clearObservers) {
-        this._$_clearObservers();
-      }
+      // if (this._$_clearObservers) {
+      //   this._$_clearObservers();
+      // }
       if (isDisposable(this.$entity)) {
         this._$_destroyed = true;
         this.$entity.dispose();
@@ -197,9 +197,9 @@ export default {
 
   beforeDestroy() {
     this._$_destroyed = true;
-    if (this._$_clearObservers) {
-      this._$_clearObservers();
-    }
+    // if (this._$_clearObservers) {
+    //   this._$_clearObservers();
+    // }
     this.$emit('dispose');
     if (isDisposable(this.$entity)) {
       this.$entity.dispose();
