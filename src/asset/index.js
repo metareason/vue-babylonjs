@@ -34,7 +34,28 @@ export default {
     //   assetContainer.addAllToScene();
     // },
 
-    // @jeremy.dou 2020-05-14 
+    // @jeremy.dou 2020-05-14
+    // async loadAssetContainer() {
+    //   if (!this.src) {
+    //     return;
+    //   }
+    //   await this._$_sceneReady;
+    //   let assetContainer = await SceneLoader.LoadAssetContainerAsync(this.src);
+    //   await this._$_parentReady;
+    //   if (assetContainer.meshes.length > 1) {
+    //     // this.$replace(assetContainer.createRootMesh());
+    //     let transformNode = new TransformNode(this.name, this.$scene);
+    //     assetContainer.meshes.forEach((m) => {
+    //       m.setParent(transformNode);
+    //     });
+    //     this.$replace(transformNode);
+    //   } else {
+    //     this.$replace(assetContainer.meshes[0]);
+    //   }
+    //   assetContainer.addAllToScene();
+    // },
+
+    // @fleur 2020-05-15
     async loadAssetContainer() {
       if (!this.src) {
         return;
@@ -42,19 +63,12 @@ export default {
       await this._$_sceneReady;
       let assetContainer = await SceneLoader.LoadAssetContainerAsync(this.src);
       await this._$_parentReady;
-      if (assetContainer.meshes.length > 1) {
-        // this.$replace(assetContainer.createRootMesh());
-        let transformNode = new TransformNode(this.name, this.$scene);
-        assetContainer.meshes.forEach((m) => {
-          m.setParent(transformNode);
-        });
-        this.$replace(transformNode);
-      } else {
-        this.$replace(assetContainer.meshes[0]);
-      }
+      assetContainer.meshes.forEach((m) => {
+        m.setParent(this.$entity);
+      });
       assetContainer.addAllToScene();
+      // this.$replace(this.$entity);
     },
-
   },
 
   mounted() {

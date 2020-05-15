@@ -80,11 +80,19 @@ export default {
       // https://doc.babylonjs.com/how_to/using_the_physics_engine
       // revert commit
       // https://github.com/Beg-in/vue-babylonjs/commit/d57997635b99f5eb773c6e71cf9bddff6be551e9
-      this.$entity = new TransformNode(this.name, this.$scene);
+      // this.$entity = new TransformNode(this.name, this.$scene);
       // // HACK: TransformNode does not implement IPhysicsEnabledObject, so using invisible box instead
       // let box = MeshBuilder.CreateBox(this.name, {}, this.$scene);
       // box.isVisible = false;
       // this.$entity = box;
+
+      // @fleur 2020-05-15
+      const transformNode = new TransformNode(this.name, this.$scene);
+      this.$entity = transformNode; // not really but it s what the initial code said
+      // emit entity
+      Object.assign(this._$_hookArgs, {
+        entity: transformNode,
+      });
     }
     this._$_setPosition();
     this._$_setRotation();

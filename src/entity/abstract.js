@@ -151,6 +151,7 @@ export default {
   },
 
   async mounted() {
+     // never called the beforeScene event does not exist in vue babylon?
     if (this.$options.beforeScene) { // Lifecycle Hook
       this.$entity = await this.$options.beforeScene.call(this, Object.assign({
         sceneReady: this._$_sceneReady,
