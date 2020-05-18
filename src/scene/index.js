@@ -18,7 +18,7 @@ export default {
       EngineReady: this.EngineReady,
       SceneReady: this.SceneReady,
       SceneBus: this.sceneBus,
-      SceneGravity: this.gravityVector3,
+      // SceneGravity: this.gravityVector3,
       EntityBus: this.$event,
     };
   },
@@ -84,10 +84,10 @@ export default {
       default: null,
     },
 
-    gravity: {
-      validator,
-      default: () => new Vector3(0, -9.81, 0),
-    },
+    // gravity: {
+    //   validator,
+    //   default: () => new Vector3(0, -9.81, 0),
+    // },
   },
 
   computed: {
@@ -110,9 +110,9 @@ export default {
       return toColor3(this.main);
     },
 
-    gravityVecor3() {
-      return toVec3(this.gravity);
-    },
+    // gravityVecor3() {
+    //   return toVec3(this.gravity);
+    // },
   },
 
   methods: {
@@ -196,11 +196,11 @@ export default {
       this.scene.executeWhenReady(this.resize); // HACK: investigate sqaush effect on initial load
     },
 
-    setGravity() {
-      if (this.scene && this.scene.getPhysicsEngine()) {
-        this.physicsEngine.setGravity(this.gravityVector3);
-      }
-    },
+    // setGravity() {
+    //   if (this.scene && this.scene.getPhysicsEngine()) {
+    //     this.physicsEngine.setGravity(this.gravityVector3);
+    //   }
+    // },
 
     register({ name }) {
       this._$_children[name] = defer();
@@ -244,9 +244,9 @@ export default {
       this.debugLayer();
     },
 
-    gravityVector3() {
-      this.setGravity();
-    },
+    // gravityVector3() {
+    //   this.setGravity();
+    // },
   },
 
   beforeCreate() {
