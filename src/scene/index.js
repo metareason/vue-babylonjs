@@ -5,12 +5,12 @@ import { vecValidator as validator, toVec3 } from '../types/vector';
 import { color3, toColor3 } from '../types/color';
 // import { registerObservers } from '../observable';
 
-const FOG_TYPES = {
-  NONE: 'none',
-  EXP: 'exp',
-  EXP2: 'exp2',
-  LINEAR: 'linear',
-};
+// const FOG_TYPES = {
+//   NONE: 'none',
+//   EXP: 'exp',
+//   EXP2: 'exp2',
+//   LINEAR: 'linear',
+// };
 
 export default {
   provide() {
@@ -39,30 +39,30 @@ export default {
       default: () => Color3.Black(),
     },
 
-    fog: {
-      validator: value => Object.values(FOG_TYPES).includes(value),
-      default: Object.values(FOG_TYPES)[0],
-    },
+    // fog: {
+    //   validator: value => Object.values(FOG_TYPES).includes(value),
+    //   default: Object.values(FOG_TYPES)[0],
+    // },
 
-    fogStart: {
-      type: Number,
-      default: 20,
-    },
+    // fogStart: {
+    //   type: Number,
+    //   default: 20,
+    // },
 
-    fogEnd: {
-      type: Number,
-      default: 60,
-    },
+    // fogEnd: {
+    //   type: Number,
+    //   default: 60,
+    // },
 
-    fogDensity: {
-      type: Number,
-      default: 0.1,
-    },
+    // fogDensity: {
+    //   type: Number,
+    //   default: 0.1,
+    // },
 
-    fogColor: {
-      validator: color3.validator,
-      default: () => new Color3(0.2, 0.2, 0.3),
-    },
+    // fogColor: {
+    //   validator: color3.validator,
+    //   default: () => new Color3(0.2, 0.2, 0.3),
+    // },
 
     fullscreen: {
       type: Boolean,
@@ -91,24 +91,24 @@ export default {
   },
 
   computed: {
-    ambientColor() {
-      return toColor3(this.ambient);
-    },
+    // ambientColor() {
+    //   return toColor3(this.ambient);
+    // },
+    //
+    // fogMode() {
+    //   return Scene[`FOGMODE_${this.fog.toUpperCase()}`];
+    // },
+    //
+    // fogColor3() {
+    //   return toColor3(this.fogColor);
+    // },
 
-    fogMode() {
-      return Scene[`FOGMODE_${this.fog.toUpperCase()}`];
-    },
-
-    fogColor3() {
-      return toColor3(this.fogColor);
-    },
-
-    mainColor() {
-      if (!this.main) {
-        return null;
-      }
-      return toColor3(this.main);
-    },
+    // mainColor() {
+    //   if (!this.main) {
+    //     return null;
+    //   }
+    //   return toColor3(this.main);
+    // },
 
     // gravityVecor3() {
     //   return toVec3(this.gravity);
@@ -117,39 +117,41 @@ export default {
 
   methods: {
     setAmbientColor() {
-      this.scene.ambientColor = this.ambientColor;
+      // this.scene.ambientColor = this.ambientColor;
+      // remove computed
+      this.scene.ambientColor = toColor3(this.ambient);
     },
 
-    setFogStart() {
-      this.scene.fogStart = this.fogStart;
-    },
+    // setFogStart() {
+    //   this.scene.fogStart = this.fogStart;
+    // },
 
-    setFogEnd() {
-      this.scene.fogStart = this.fogEnd;
-    },
+    // setFogEnd() {
+    //   this.scene.fogStart = this.fogEnd;
+    // },
 
-    setFogDensity() {
-      this.scene.fogDensity = this.fogDensity;
-    },
+    // setFogDensity() {
+    //   this.scene.fogDensity = this.fogDensity;
+    // },
 
-    setFogColor() {
-      this.scene.fogColor = this.fogColor3;
-    },
+    // setFogColor() {
+    //   this.scene.fogColor = this.fogColor3;
+    // },
 
-    setFogMode() {
-      this.scene.fogMode = this.fogMode;
-      switch (this.fog) {
-        case 'none':
-          break;
-        case 'linear':
-          this.setFogStart();
-          this.setFogEnd();
-          break;
-        default:
-          this.setFogDensity();
-      }
-      this.setFogColor();
-    },
+    // setFogMode() {
+    //   this.scene.fogMode = this.fogMode;
+    //   switch (this.fog) {
+    //     case 'none':
+    //       break;
+    //     case 'linear':
+    //       this.setFogStart();
+    //       this.setFogEnd();
+    //       break;
+    //     default:
+    //       this.setFogDensity();
+    //   }
+    //   this.setFogColor();
+    // },
 
     requestFullScreen() {
       if (this.fullscreen) {
@@ -173,8 +175,12 @@ export default {
       if (this.scene.cameras.length < 1) {
         this.scene.createDefaultCameraOrLight(true, true, true);
         let helper = this.scene.createDefaultEnvironment(this.environment);
-        if (this.mainColor) {
-          helper.setMainColor(this.mainColor);
+        // if (this.mainColor) {
+        //   helper.setMainColor(this.mainColor);
+        // }
+        // remove computed
+        if (this.main) {
+          helper.setMainColor(toColor3(this.main));
         }
       }
     },
@@ -187,7 +193,7 @@ export default {
       this.$emit('scene', this.scene);
       // this.observers = registerObservers.call(this, this.scene);
       this.setAmbientColor();
-      this.setFogMode();
+      // this.setFogMode();
       this.resolveScene(this.scene);
       this.resolveEngine(this.engine);
       this.engine.runRenderLoop(() => this.scene.render());
@@ -212,29 +218,29 @@ export default {
   },
 
   watch: {
-    ambientColor() {
-      this.setAmbientColor();
-    },
+    // ambientColor() {
+    //   this.setAmbientColor();
+    // },
 
-    fog() {
-      this.setFogMode();
-    },
-
-    fogDensity() {
-      this.setFogDensity();
-    },
-
-    fogStart() {
-      this.setFogStart();
-    },
-
-    fogEnd() {
-      this.setFogEnd();
-    },
-
-    fogColor3() {
-      this.setFogColor();
-    },
+    // fog() {
+    //   this.setFogMode();
+    // },
+    //
+    // fogDensity() {
+    //   this.setFogDensity();
+    // },
+    //
+    // fogStart() {
+    //   this.setFogStart();
+    // },
+    //
+    // fogEnd() {
+    //   this.setFogEnd();
+    // },
+    //
+    // fogColor3() {
+    //   this.setFogColor();
+    // },
 
     fullscreen() {
       this.requestFullScreen();
