@@ -7,4 +7,4 @@ export { BABYLON, plugin };
 export { default as AbstractEntity } from './entity/abstract';
 export * from './mixins';
 export * from './core';
-export * from './physics';
+// export * from './physics';
