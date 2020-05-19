@@ -63,8 +63,11 @@ export default {
       await this._$_sceneReady;
       let assetContainer = await SceneLoader.LoadAssetContainerAsync(this.src);
       await this._$_parentReady;
+      // keep mesh hierarchy @Jeremy 2020-05-19
       assetContainer.meshes.forEach((m) => {
-        m.setParent(this.$entity);
+        if (m.parent === null) {
+          m.setParent(this.$entity);
+        }
       });
       assetContainer.addAllToScene();
       // this.$replace(this.$entity);
