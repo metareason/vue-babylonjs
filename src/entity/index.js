@@ -94,9 +94,10 @@ export default {
         entity: transformNode,
       });
     }
-    this._$_setPosition();
-    this._$_setRotation();
-    this._$_setScaling();
+    // @Jeremy 2020-05-20
+    // this._$_setPosition();
+    // this._$_setRotation();
+    // this._$_setScaling();
     if (!this.$entity.parent) {
       this.$entity.parent = this._$_parent;
     }

@@ -69,6 +69,10 @@ export default {
           m.setParent(this.$entity);
         }
       });
+      // @Jeremy 2020-05-20
+      this._$_setPosition();
+      this._$_setRotation();
+      this._$_setScaling();
       assetContainer.addAllToScene();
       // this.$replace(this.$entity);
     },
