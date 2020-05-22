@@ -15,11 +15,11 @@ import { color3, toColor3 } from '../types/color';
 export default {
   provide() {
     return {
-      EngineReady: this.EngineReady,
-      SceneReady: this.SceneReady,
-      SceneBus: this.sceneBus,
+      EngineReady: this.engine, // this.EngineReady,
+      SceneReady: this.scene, // this.SceneReady, // get rid of promises and add a v-if scene in the component
+      // SceneBus: this.sceneBus,
       // SceneGravity: this.gravityVector3,
-      EntityBus: this.$event,
+      // EntityBus: this.$event,
     };
   },
 
@@ -174,7 +174,7 @@ export default {
     defaultEnvironment() {
       if (this.scene.cameras.length < 1) {
         this.scene.createDefaultCameraOrLight(true, true, true);
-        let helper = this.scene.createDefaultEnvironment(this.environment);
+        const helper = this.scene.createDefaultEnvironment(this.environment);
         // if (this.mainColor) {
         //   helper.setMainColor(this.mainColor);
         // }
@@ -186,7 +186,7 @@ export default {
     },
 
     setScene() {
-      console.log('dt-debug: This is a message from vue-babylonjs#performance-debug')
+      console.log('dt-debug: This is a message from vue-babylonjs#performance-debug');
       this.engine = new Engine(this.$refs.scene, true);
       this.$emit('engine', this.engine);
       this.scene = new Scene(this.engine);
@@ -194,8 +194,8 @@ export default {
       // this.observers = registerObservers.call(this, this.scene);
       this.setAmbientColor();
       // this.setFogMode();
-      this.resolveScene(this.scene);
-      this.resolveEngine(this.engine);
+      // this.resolveScene(this.scene);
+      // this.resolveEngine(this.engine);
       this.engine.runRenderLoop(() => this.scene.render());
       this.requestFullScreen();
       this.debugLayer();
@@ -208,13 +208,13 @@ export default {
     //   }
     // },
 
-    register({ name }) {
-      this._$_children[name] = defer();
-    },
-
-    complete({ name, entity }) {
-      this._$_children[name].complete({ name, entity });
-    },
+    // register({ name }) {
+    //   this._$_children[name] = defer();
+    // },
+    //
+    // complete({ name, entity }) {
+    //   this._$_children[name].complete({ name, entity });
+    // },
   },
 
   watch: {
@@ -255,34 +255,38 @@ export default {
     // },
   },
 
-  beforeCreate() {
-    this.sceneBus = createBus.call(this);
-    this.SceneReady = new Promise(resolve => {
-      this.resolveScene = resolve;
-    });
-    this.EngineReady = new Promise(resolve => {
-      this.resolveEngine = resolve;
-    });
-    this.$event = createBus.call(this);
-  },
+  // beforeCreate() {
+  //   // this.sceneBus = createBus.call(this);
+  //   this.SceneReady = new Promise((resolve) => {
+  //     this.resolveScene = resolve;
+  //   });
+  //   this.EngineReady = new Promise((resolve) => {
+  //     this.resolveEngine = resolve;
+  //   });
+  //   // this.$event = createBus.call(this);
+  // },
 
-  beforeMount() {
-    this._$_children = {};
-    this.$event.$on('register', this.register);
-    this.$event.$on('complete', this.complete);
-  },
+  // beforeMount() {
+  //   this._$_children = {};
+  //   this.$event.$on('register', this.register);
+  //   this.$event.$on('complete', this.complete);
+  // },
 
   async mounted() {
     console.log('scene before mounted by vue babylon');
     this.setScene(this.$refs.scene);
     window.addEventListener('resize', this.resize);
-    let children = await Promise.all(Object.values(this._$_children));
-    children = children.reduce((out, { name, entity }) => {
-      out[name] = entity;
-      return out;
-    }, {});
-    this.$emit('complete', { children, scene: this.scene, engine: this.engine });
+    // let children = await Promise.all(Object.values(this._$_children));
+    // children = children.reduce((out, { name, entity }) => {
+    //   out[name] = entity;
+    //   return out;
+    // }, {});
+    this.$emit('complete', { children: {}, scene: this.scene, engine: this.engine }); // todo children
     this.defaultEnvironment();
+
+    // If you really need to remove every single listener from EventBus, regardless of channel,
+    // you can call EventBus.$off() with no arguments at all.
+    // this.$event.$off();
   },
 
   beforeDestroy() {

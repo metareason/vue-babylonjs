@@ -1,4 +1,5 @@
-import { id, isDisposable, createBus, defer } from '../util';
+// import { id, isDisposable, createBus, defer } from '../util';
+import { id, isDisposable } from '../util';
 // import { registerObservers } from '../observable';
 
 export default {
@@ -7,28 +8,28 @@ export default {
 
     _$_parentReady: {
       from: 'EntityReady',
-      default: Promise.resolve(null),
+      default: null, // Promise.resolve(null), get rid of promises and add a v-if entity in the component
     },
 
-    $bus: {
-      from: 'EntityBus',
-      default() {
-        return createBus.call(this);
-      },
-    },
-
-    $sceneBus: {
-      from: 'SceneBus',
-      default() {
-        return createBus.call(this);
-      },
-    },
+  //   $bus: {
+  //     from: 'EntityBus',
+  //     default() {
+  //       return createBus.call(this);
+  //     },
+  //   },
+  //
+  //   $sceneBus: {
+  //     from: 'SceneBus',
+  //     default() {
+  //       return createBus.call(this);
+  //     },
+  //   },
   },
 
   provide() {
     return {
-      EntityReady: this._$_entityReady,
-      EntityBus: this.$event,
+      EntityReady: this.$entity, // this._$_entityReady,
+      // EntityBus: this.$event,
     };
   },
 
@@ -103,13 +104,13 @@ export default {
       await this._$_init();
     },
 
-    register({ name }) {
-      this._$_children[name] = defer();
-    },
+    // register({ name }) {
+    //   this._$_children[name] = defer();
+    // },
 
-    complete({ name, entity }) {
-      this._$_children[name].complete({ name, entity });
-    },
+    // complete({ name, entity }) {
+    //   this._$_children[name].complete({ name, entity });
+    // },
   },
 
   watch: {
@@ -127,40 +128,39 @@ export default {
     },
   },
 
-  beforeCreate() {
-    this.$event = createBus.call(this);
-    this._$_entityReady = defer();
-  },
+  // beforeCreate() {
+  //   // this.$event = createBus.call(this);
+  //   this._$_entityReady = defer();
+  // },
 
   created() {
     this._$_hookArgs = {
       name: this.name,
     };
-    if (this.$options.events) {
-      Object.entries(this.$options.events).forEach(([name, fn]) => {
-        this.$event.$on(name, fn.bind(this));
-      });
-    }
+    // if (this.$options.events) {
+    //   Object.entries(this.$options.events).forEach(([name, fn]) => {
+    //     this.$event.$on(name, fn.bind(this));
+    //   });
+    // }
   },
 
-  beforeMount() {
-    this._$_children = {};
-    this.$event.$on('register', this.register);
-    this.$event.$on('complete', this.complete);
-    this.$bus.$emit('register', { name: this.name });
-  },
+  // beforeMount() {
+  //   this._$_children = {};
+  //   this.$event.$on('register', this.register);
+  //   this.$event.$on('complete', this.complete);
+  //   this.$bus.$emit('register', { name: this.name });
+  // },
 
   async mounted() {
-     // never called the beforeScene event does not exist in vue babylon?
-    if (this.$options.beforeScene) { // Lifecycle Hook
-      this.$entity = await this.$options.beforeScene.call(this, Object.assign({
-        sceneReady: this._$_sceneReady,
-        parentReady: this._$_parentReady,
-      }, this._$_hookArgs));
-    }
+    // if (this.$options.beforeScene) { // Lifecycle Hook
+    //   this.$entity = await this.$options.beforeScene.call(this, Object.assign({
+    //     sceneReady: this._$_sceneReady,
+    //     parentReady: this._$_parentReady,
+    //   }, this._$_hookArgs));
+    // }
     this.$scene = await this._$_sceneReady;
     this._$_hookArgs.scene = this.$scene;
-    let sceneArgs = Object.assign({
+    const sceneArgs = Object.assign({
       parentReady: this._$_parentReady,
     }, this._$_hookArgs);
     this.$emit('scene', sceneArgs);
@@ -169,7 +169,7 @@ export default {
     }
     this._$_hookArgs.entity = this.$entity;
     this._$_onParent(await this._$_parentReady);
-    this.$bus.$on('change', this._$_onParent.bind(this));
+    // this.$bus.$on('change', this._$_onParent.bind(this)); // todo what is this for?
     if (this._$_input) {
       this.$replace(this._$_input);
     } else {
@@ -183,15 +183,15 @@ export default {
       this._$_afterRender = this.$options.afterRender.bind(this);
       this.$scene.registerAfterRender(this._$_afterRender);
     }
-    this._$_entityReady.complete(this.$entity);
-    this.$bus.$emit('complete', { name: this.name, entity: this.$entity });
+    // this._$_entityReady.complete(this.$entity);
+    // this.$bus.$emit('complete', { name: this.name, entity: this.$entity });
     this._$_applyProperties();
-    let children = await Promise.all(Object.values(this._$_children));
-    children = children.reduce((out, { name, entity }) => {
-      out[name] = entity;
-      return out;
-    }, {});
-    this._$_hookArgs.children = children;
+    // let children = await Promise.all(Object.values(this._$_children));
+    // children = children.reduce((out, { name, entity }) => {
+    //   out[name] = entity;
+    //   return out;
+    // }, {});
+    // this._$_hookArgs.children = children; // todo children
     this.$emit('complete', this._$_hookArgs);
   },
 
