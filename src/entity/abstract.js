@@ -78,7 +78,7 @@ export default {
         };
       }
       this.$emit('_$_output', this.$entity);
-      this.$event.$emit('change', this.$entity);
+      // this.$event.$emit('change', this.$entity);
       this.$emit('entity', this._$_hookArgs);
     },
 
