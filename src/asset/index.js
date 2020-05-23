@@ -89,7 +89,9 @@ export default {
   },
 
   beforeDestroy() {
-    this.assetContainer.dispose();
-    this.assetContainer = null;
+    if (this.assetContainer) {
+      this.assetContainer.dispose();
+      this.assetContainer = null;
+    }
   },
 };
