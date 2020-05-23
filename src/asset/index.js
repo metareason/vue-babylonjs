@@ -12,6 +12,12 @@ export default {
     },
   },
 
+  data() {
+    return {
+      assetContainer: null, // don't leave orphan promises on glb validators
+    };
+  },
+
   watch: {
     src() {
       this.loadAssetContainer();
@@ -61,10 +67,10 @@ export default {
         return;
       }
       await this._$_sceneReady;
-      let assetContainer = await SceneLoader.LoadAssetContainerAsync(this.src);
+      this.assetContainer = await SceneLoader.LoadAssetContainerAsync(this.src);
       await this._$_parentReady;
       // keep mesh hierarchy @Jeremy 2020-05-19
-      assetContainer.meshes.forEach((m) => {
+      this.assetContainer.meshes.forEach((m) => {
         if (m.parent === null) {
           m.setParent(this.$entity);
         }
@@ -73,12 +79,17 @@ export default {
       this._$_setPosition();
       this._$_setRotation();
       this._$_setScaling();
-      assetContainer.addAllToScene();
+      this.assetContainer.addAllToScene();
       // this.$replace(this.$entity);
     },
   },
 
   mounted() {
     this.loadAssetContainer();
+  },
+
+  beforeDestroy() {
+    this.assetContainer.dispose();
+    this.assetContainer = null;
   },
 };
