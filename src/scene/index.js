@@ -15,8 +15,8 @@ import { color3, toColor3 } from '../types/color';
 export default {
   provide() {
     return {
-      EngineReady: this.engine, // this.EngineReady,
-      SceneReady: this.scene, // this.SceneReady, // get rid of promises and add a v-if scene in the component
+      EngineReady: this.EngineReady,
+      SceneReady: this.SceneReady,
       // SceneBus: this.sceneBus,
       // SceneGravity: this.gravityVector3,
       // EntityBus: this.$event,
@@ -194,8 +194,8 @@ export default {
       // this.observers = registerObservers.call(this, this.scene);
       this.setAmbientColor();
       // this.setFogMode();
-      // this.resolveScene(this.scene);
-      // this.resolveEngine(this.engine);
+      this.resolveScene(this.scene);
+      this.resolveEngine(this.engine);
       this.engine.runRenderLoop(() => this.scene.render());
       this.requestFullScreen();
       this.debugLayer();
@@ -255,16 +255,16 @@ export default {
     // },
   },
 
-  // beforeCreate() {
-  //   // this.sceneBus = createBus.call(this);
-  //   this.SceneReady = new Promise((resolve) => {
-  //     this.resolveScene = resolve;
-  //   });
-  //   this.EngineReady = new Promise((resolve) => {
-  //     this.resolveEngine = resolve;
-  //   });
-  //   // this.$event = createBus.call(this);
-  // },
+  beforeCreate() {
+    // this.sceneBus = createBus.call(this);
+    this.SceneReady = new Promise((resolve) => {
+      this.resolveScene = resolve;
+    });
+    this.EngineReady = new Promise((resolve) => {
+      this.resolveEngine = resolve;
+    });
+    // this.$event = createBus.call(this);
+  },
 
   // beforeMount() {
   //   this._$_children = {};

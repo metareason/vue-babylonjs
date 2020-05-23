@@ -1,5 +1,5 @@
 // import { id, isDisposable, createBus, defer } from '../util';
-import { id, isDisposable } from '../util';
+import { id, isDisposable, defer } from '../util';
 // import { registerObservers } from '../observable';
 
 export default {
@@ -8,7 +8,7 @@ export default {
 
     _$_parentReady: {
       from: 'EntityReady',
-      default: null, // Promise.resolve(null), get rid of promises and add a v-if entity in the component
+      default: Promise.resolve(null),
     },
 
   //   $bus: {
@@ -28,7 +28,7 @@ export default {
 
   provide() {
     return {
-      EntityReady: this.$entity, // this._$_entityReady,
+      EntityReady: this._$_entityReady,
       // EntityBus: this.$event,
     };
   },
@@ -128,10 +128,10 @@ export default {
     },
   },
 
-  // beforeCreate() {
+  beforeCreate() {
   //   // this.$event = createBus.call(this);
-  //   this._$_entityReady = defer();
-  // },
+    this._$_entityReady = defer();
+  },
 
   created() {
     this._$_hookArgs = {
@@ -152,12 +152,12 @@ export default {
   // },
 
   async mounted() {
-    // if (this.$options.beforeScene) { // Lifecycle Hook
-    //   this.$entity = await this.$options.beforeScene.call(this, Object.assign({
-    //     sceneReady: this._$_sceneReady,
-    //     parentReady: this._$_parentReady,
-    //   }, this._$_hookArgs));
-    // }
+    if (this.$options.beforeScene) { // Lifecycle Hook
+      this.$entity = await this.$options.beforeScene.call(this, Object.assign({
+        sceneReady: this._$_sceneReady,
+        parentReady: this._$_parentReady,
+      }, this._$_hookArgs));
+    }
     this.$scene = await this._$_sceneReady;
     this._$_hookArgs.scene = this.$scene;
     const sceneArgs = Object.assign({
