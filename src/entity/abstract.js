@@ -183,7 +183,7 @@ export default {
       this._$_afterRender = this.$options.afterRender.bind(this);
       this.$scene.registerAfterRender(this._$_afterRender);
     }
-    // this._$_entityReady.complete(this.$entity);
+    this._$_entityReady.complete(this.$entity);
     // this.$bus.$emit('complete', { name: this.name, entity: this.$entity });
     this._$_applyProperties();
     // let children = await Promise.all(Object.values(this._$_children));
