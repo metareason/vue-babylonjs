@@ -1,6 +1,5 @@
-// import { id, isDisposable, createBus, defer } from '../util';
-import { id, isDisposable, defer } from '../util';
-// import { registerObservers } from '../observable';
+import { id, isDisposable, createBus, defer } from '../util';
+import { registerObservers } from '../observable';
 
 export default {
   inject: {
@@ -11,25 +10,25 @@ export default {
       default: Promise.resolve(null),
     },
 
-  //   $bus: {
-  //     from: 'EntityBus',
-  //     default() {
-  //       return createBus.call(this);
-  //     },
-  //   },
-  //
-  //   $sceneBus: {
-  //     from: 'SceneBus',
-  //     default() {
-  //       return createBus.call(this);
-  //     },
-  //   },
+    $bus: {
+      from: 'EntityBus',
+      default() {
+        return createBus.call(this);
+      },
+    },
+
+    $sceneBus: {
+      from: 'SceneBus',
+      default() {
+        return createBus.call(this);
+      },
+    },
   },
 
   provide() {
     return {
       EntityReady: this._$_entityReady,
-      // EntityBus: this.$event,
+      EntityBus: this.$event,
     };
   },
 
@@ -63,7 +62,8 @@ export default {
     },
 
     async _$_init() {
-      // this._$_clearObservers = registerObservers.call(this, this.$scene);
+      console.log('_$_init', this.$entity);
+      this._$_clearObservers = registerObservers.call(this, this.$scene);
       if (this.$options._$_onTransform) { // Private Lifecycle Hook
         await this.$options._$_onTransform.call(this);
       }
@@ -78,7 +78,7 @@ export default {
         };
       }
       this.$emit('_$_output', this.$entity);
-      // this.$event.$emit('change', this.$entity);
+      this.$event.$emit('change', this.$entity); // re-assign the parent
       this.$emit('entity', this._$_hookArgs);
     },
 
@@ -92,9 +92,10 @@ export default {
     },
 
     async $replace(entity) {
-      // if (this._$_clearObservers) {
-      //   this._$_clearObservers();
-      // }
+      console.log('$replace', entity);
+      if (this._$_clearObservers) {
+        this._$_clearObservers();
+      }
       if (isDisposable(this.$entity)) {
         this._$_destroyed = true;
         this.$entity.dispose();
@@ -104,13 +105,13 @@ export default {
       await this._$_init();
     },
 
-    // register({ name }) {
-    //   this._$_children[name] = defer();
-    // },
+    register({ name }) {
+      this._$_children[name] = defer();
+    },
 
-    // complete({ name, entity }) {
-    //   this._$_children[name].complete({ name, entity });
-    // },
+    complete({ name, entity }) {
+      this._$_children[name].complete({ name, entity });
+    },
   },
 
   watch: {
@@ -122,6 +123,7 @@ export default {
     },
 
     _$_input() {
+      console.log('watch', this._$_input);
       if (this.$entity !== this._$_input) {
         this.$replace(this._$_input);
       }
@@ -129,27 +131,28 @@ export default {
   },
 
   beforeCreate() {
-  //   // this.$event = createBus.call(this);
+    this.$event = createBus.call(this);
     this._$_entityReady = defer();
   },
 
   created() {
+    console.log('created', this.name);
     this._$_hookArgs = {
       name: this.name,
     };
-    // if (this.$options.events) {
-    //   Object.entries(this.$options.events).forEach(([name, fn]) => {
-    //     this.$event.$on(name, fn.bind(this));
-    //   });
-    // }
+    if (this.$options.events) {
+      Object.entries(this.$options.events).forEach(([name, fn]) => {
+        this.$event.$on(name, fn.bind(this));
+      });
+    }
   },
 
-  // beforeMount() {
-  //   this._$_children = {};
-  //   this.$event.$on('register', this.register);
-  //   this.$event.$on('complete', this.complete);
-  //   this.$bus.$emit('register', { name: this.name });
-  // },
+  beforeMount() {
+    this._$_children = {};
+    this.$event.$on('register', this.register);
+    this.$event.$on('complete', this.complete);
+    this.$bus.$emit('register', { name: this.name });
+  },
 
   async mounted() {
     if (this.$options.beforeScene) { // Lifecycle Hook
@@ -160,7 +163,7 @@ export default {
     }
     this.$scene = await this._$_sceneReady;
     this._$_hookArgs.scene = this.$scene;
-    const sceneArgs = Object.assign({
+    let sceneArgs = Object.assign({
       parentReady: this._$_parentReady,
     }, this._$_hookArgs);
     this.$emit('scene', sceneArgs);
@@ -169,7 +172,7 @@ export default {
     }
     this._$_hookArgs.entity = this.$entity;
     this._$_onParent(await this._$_parentReady);
-    // this.$bus.$on('change', this._$_onParent.bind(this)); // todo what is this for?
+    this.$bus.$on('change', this._$_onParent.bind(this));
     if (this._$_input) {
       this.$replace(this._$_input);
     } else {
@@ -184,22 +187,22 @@ export default {
       this.$scene.registerAfterRender(this._$_afterRender);
     }
     this._$_entityReady.complete(this.$entity);
-    // this.$bus.$emit('complete', { name: this.name, entity: this.$entity });
+    this.$bus.$emit('complete', { name: this.name, entity: this.$entity });
     this._$_applyProperties();
-    // let children = await Promise.all(Object.values(this._$_children));
-    // children = children.reduce((out, { name, entity }) => {
-    //   out[name] = entity;
-    //   return out;
-    // }, {});
-    // this._$_hookArgs.children = children; // todo children
+    let children = await Promise.all(Object.values(this._$_children));
+    children = children.reduce((out, { name, entity }) => {
+      out[name] = entity;
+      return out;
+    }, {});
+    this._$_hookArgs.children = children;
     this.$emit('complete', this._$_hookArgs);
   },
 
   beforeDestroy() {
     this._$_destroyed = true;
-    // if (this._$_clearObservers) {
-    //   this._$_clearObservers();
-    // }
+    if (this._$_clearObservers) {
+      this._$_clearObservers();
+    }
     this.$emit('dispose');
     if (isDisposable(this.$entity)) {
       this.$entity.dispose();
