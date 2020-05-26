@@ -30,8 +30,9 @@ export default {
     //     return;
     //   }
     //   await this._$_sceneReady;
-    //   let assetContainer = await SceneLoader.LoadAssetContainerAsync(this.src);
+    //   const assetContainer = await SceneLoader.LoadAssetContainerAsync(this.src);
     //   await this._$_parentReady;
+    //   // console.log('assetContainer', assetContainer);
     //   if (assetContainer.meshes.length > 1) {
     //     this.$replace(assetContainer.createRootMesh());
     //   } else {
@@ -61,7 +62,7 @@ export default {
     //   assetContainer.addAllToScene();
     // },
 
-    // @fleur 2020-05-15
+    // @fleur 2020-05-26
     async loadAssetContainer() {
       if (!this.src) {
         return;
@@ -69,18 +70,21 @@ export default {
       await this._$_sceneReady;
       this.assetContainer = await SceneLoader.LoadAssetContainerAsync(this.src);
       await this._$_parentReady;
-      // keep mesh hierarchy @Jeremy 2020-05-19
+      // console.log('asset container', this.assetContainer);
+      // if (this.assetContainer.meshes.length > 1) {
+      //   this.assetContainer.createRootMesh();
+      // }
+      const transformNode = new TransformNode(this.name, this.$scene);
+      // this.$entity = transformNode; // not really but it s what the initial code said
+      // this._$_hookArgs.entity = this.$entity; // do you want to emit the entity?
       this.assetContainer.meshes.forEach((m) => {
+        // console.log('mesh has parent?', m.parent);
         if (m.parent === null) {
-          m.setParent(this.$entity);
+          m.setParent(transformNode);
         }
       });
-      // @Jeremy 2020-05-20
-      this._$_setPosition();
-      this._$_setRotation();
-      this._$_setScaling();
+      this.$replace(transformNode);
       this.assetContainer.addAllToScene();
-      // this.$replace(this.$entity);
     },
   },
 

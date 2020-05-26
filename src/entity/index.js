@@ -88,16 +88,16 @@ export default {
 
       // @fleur 2020-05-15
       const transformNode = new TransformNode(this.name, this.$scene);
+      // parent / scene / ....
+      // console.log('assign hook args?', this._$_hookArgs);
+      // add transformations!
+      Object.assign(transformNode, this._$_hookArgs);
       this.$entity = transformNode; // not really but it s what the initial code said
-      // emit entity
-      Object.assign(this._$_hookArgs, {
-        entity: transformNode,
-      });
+      // this._$_hookArgs.entity = this.$entity; // do you want to emit the entity?
     }
-    // @Jeremy 2020-05-20
-    // this._$_setPosition();
-    // this._$_setRotation();
-    // this._$_setScaling();
+    this._$_setPosition();
+    this._$_setRotation();
+    this._$_setScaling();
     if (!this.$entity.parent) {
       this.$entity.parent = this._$_parent;
     }

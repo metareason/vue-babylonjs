@@ -62,7 +62,7 @@ export default {
     },
 
     async _$_init() {
-      console.log('_$_init', this.$entity);
+      // console.log('_$_init', this.$entity);
       this._$_clearObservers = registerObservers.call(this, this.$scene);
       if (this.$options._$_onTransform) { // Private Lifecycle Hook
         await this.$options._$_onTransform.call(this);
@@ -76,6 +76,10 @@ export default {
             this.$destroy();
           }
         };
+      }
+      if (!this._$_hookArgs.entity) {
+        // console.log('_$_hookArgs entity', this._$_hookArgs.entity);
+        this._$_hookArgs.entity = this.$entity;
       }
       this.$emit('_$_output', this.$entity);
       this.$event.$emit('change', this.$entity); // re-assign the parent
@@ -92,7 +96,7 @@ export default {
     },
 
     async $replace(entity) {
-      console.log('$replace', entity);
+      // console.log('$replace', entity);
       if (this._$_clearObservers) {
         this._$_clearObservers();
       }
@@ -100,8 +104,11 @@ export default {
         this._$_destroyed = true;
         this.$entity.dispose();
         this._$_destroyed = false;
+        this._$_hookArgs.entity = null;
       }
       this.$entity = entity;
+      // console.log('entity null?', this._$_hookArgs.entity);
+      Object.assign(this.$entity, this._$_hookArgs); // entity null at this stage assign parent / name / transformations
       await this._$_init();
     },
 
@@ -123,7 +130,7 @@ export default {
     },
 
     _$_input() {
-      console.log('watch', this._$_input);
+      // console.log('watch', this._$_input);
       if (this.$entity !== this._$_input) {
         this.$replace(this._$_input);
       }
@@ -136,7 +143,7 @@ export default {
   },
 
   created() {
-    console.log('created', this.name);
+    // console.log('created', this.name);
     this._$_hookArgs = {
       name: this.name,
     };

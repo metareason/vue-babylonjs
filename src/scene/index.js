@@ -1,5 +1,5 @@
 import { Engine, Scene, Color3, Vector3 } from '@babylonjs/core';
-import '@babylonjs/inspector';
+// import '@babylonjs/inspector'; // creates and never removes dedicated workers in chrome task manager???
 import { createBus, defer } from '../util';
 import { vecValidator as validator, toVec3 } from '../types/vector';
 import { color3, toColor3 } from '../types/color';
