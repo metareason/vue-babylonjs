@@ -62,7 +62,7 @@ export default {
     },
 
     async _$_init() {
-      // console.log('_$_init', this.$entity);
+      // console.log('_$_init', this.name);
       // this._$_clearObservers = registerObservers.call(this, this.$scene);
       if (this.$options._$_onTransform) { // Private Lifecycle Hook
         await this.$options._$_onTransform.call(this);
@@ -87,6 +87,7 @@ export default {
     },
 
     async _$_onParent(parent) {
+      // console.log('_$_onParent', this.name);
       this._$_parent = parent;
       this._$_hookArgs.parent = this._$_parent;
       if (this.$options.onParent) { // Lifecycle Hook
@@ -96,7 +97,7 @@ export default {
     },
 
     async $replace(entity) {
-      // console.log('$replace', entity);
+      // console.log('$replace don t use anymore', this.name);
       // if (this._$_clearObservers) {
       //   this._$_clearObservers();
       // }

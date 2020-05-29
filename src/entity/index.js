@@ -87,13 +87,14 @@ export default {
       // this.$entity = box;
 
       // @fleur 2020-05-15
+      // console.log('transform node', this.name);
       const transformNode = new TransformNode(this.name, this.$scene);
       // parent / scene / ....
       // console.log('assign hook args?', this._$_hookArgs);
       // add transformations!
       Object.assign(transformNode, this._$_hookArgs);
       this.$entity = transformNode; // not really but it s what the initial code said
-      // this._$_hookArgs.entity = this.$entity; // do you want to emit the entity?
+      // this._$_hookArgs.entity = this.$entity; // done in init
     }
     this._$_setPosition();
     this._$_setRotation();

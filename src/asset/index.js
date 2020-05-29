@@ -75,15 +75,17 @@ export default {
       //   this.assetContainer.createRootMesh();
       // }
       const transformNode = new TransformNode(this.name, this.$scene);
-      // this.$entity = transformNode; // not really but it s what the initial code said
-      // this._$_hookArgs.entity = this.$entity; // do you want to emit the entity?
       this.assetContainer.meshes.forEach((m) => {
         // console.log('mesh has parent?', m.parent);
         if (m.parent === null) {
           m.setParent(transformNode);
         }
       });
-      this.$replace(transformNode);
+      // this.$replace(transformNode); // no! parent / children inheritance broken
+      this._$_hookArgs.entity = null;
+      Object.assign(transformNode, this._$_hookArgs);
+      this.$entity = transformNode;
+      this._$_init(); // this._$_hookArgs.entity = this.$entity;
       this.assetContainer.addAllToScene();
     },
   },
