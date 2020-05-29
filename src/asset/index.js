@@ -74,18 +74,20 @@ export default {
       // if (this.assetContainer.meshes.length > 1) {
       //   this.assetContainer.createRootMesh();
       // }
-      const transformNode = new TransformNode(this.name, this.$scene);
+      // const transformNode = new TransformNode(this.name, this.$scene);
       this.assetContainer.meshes.forEach((m) => {
-        // console.log('mesh has parent?', m.parent);
+        // https://doc.babylonjs.com/how_to/parenting
+        // The order you set transformations, such as position or rotation, to the parent mesh will affect the result using methods 2 and 3 above.
         if (m.parent === null) {
-          m.setParent(transformNode);
+          // m.setParent(transformNode);
+          m.parent = this.$entity;
         }
       });
       // this.$replace(transformNode); // no! parent / children inheritance broken
-      this._$_hookArgs.entity = null;
-      Object.assign(transformNode, this._$_hookArgs);
-      this.$entity = transformNode;
-      this._$_init(); // this._$_hookArgs.entity = this.$entity;
+      // this._$_hookArgs.entity = null;
+      // Object.assign(transformNode, this._$_hookArgs);
+      // this.$entity = transformNode; // no! then you have 2 transform nodes with the same id
+      // this._$_init(); // resets the parent with on transform
       this.assetContainer.addAllToScene();
     },
   },
