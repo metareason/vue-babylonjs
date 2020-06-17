@@ -98,6 +98,11 @@ export default {
 
   beforeDestroy() {
     if (this.assetContainer) {
+      // This dispose and scene.dispose seem to conflict? Try to clear transformNodes manually 
+      for (let node of this.assetContainer.transformNodes) {
+        node = null;
+      }
+      this.assetContainer.transformNodes = [];
       this.assetContainer.dispose();
       this.assetContainer = null;
     }
